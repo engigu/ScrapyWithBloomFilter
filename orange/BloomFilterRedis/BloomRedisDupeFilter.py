@@ -44,10 +44,16 @@ class BloomRedisDupeFilter(BaseDupeFilter):
     def request_seen(self, request):
         # use scrapy's default request_fingerprint
         fp = request_fingerprint(request)
-        print(request.callback)
+        # print(request.callback)
         spider_name = str(request.callback).split("'")[1]
         result = self.bloomFilterRedis.do_filter(spider_name, fp)
+
+        with open("allurl.txt", "a") as f:
+            f.write(request.url + '\n')
+
         if not result:
+            with open("filted.txt", "a") as f:
+                f.write(request.url + '\n')
             return True
         return False
 

@@ -36,7 +36,7 @@ class BloomRedisDupeFilter(BaseDupeFilter):
     def request_seen(self, request):
         # use scrapy's default request_fingerprint
         fp = request_fingerprint(request)
-        print(request.callback)
+        # print(request.callback)
         spider_name = str(request.callback).split("'")[1]
         # exist
         if self.BFR.is_exists(spider_name, fp):

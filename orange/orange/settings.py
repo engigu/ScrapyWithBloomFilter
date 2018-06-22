@@ -19,8 +19,8 @@ ITEM_PIPELINES = {
 }
 
 # 配置过滤器为基于redis的布隆过滤器
-DUPEFILTER_CLASS = 'BloomFilterRedis_ex.BloomRedisDupeFilter.BloomRedisDupeFilter'
-# DUPEFILTER_CLASS = 'BloomFilterRedis.BloomRedisDupeFilter.BloomRedisDupeFilter'
+# DUPEFILTER_CLASS = 'BloomFilterRedis_ex.BloomRedisDupeFilter.BloomRedisDupeFilter'
+DUPEFILTER_CLASS = 'BloomFilterRedis.BloomRedisDupeFilter.BloomRedisDupeFilter'
 
 # 提供两种hash函数加密选择，第一种设置如下：
 # 布隆过滤器的哈希列表，默认为8个，定义在GeneralHashFunctions中
@@ -37,17 +37,17 @@ BLOOM_REDIS_DB = 10
 
 # bloom 默认string的key名字，默认是格式是 eg: bloom_filter:Spider1:0
 # 末尾数字区分块
-BLOOM_KEY = 'bf'
+BLOOM_KEY = 'orange'
 # 过滤器采用的块数目（默认单块大小256M）
 # BLOOM_BLOCK_NUM = 1
 # DUPEFILTER_DEBUG = True
 
 
 # 设置为爬取策略广度优先
-DEPTH_PRIORITY = 1
+# DEPTH_PRIORITY = 1
 
 # 设置下载延迟
-DOWNLOAD_DELAY = 1
+# DOWNLOAD_DELAY = 1
 
-CONCURRENT_REQUESTS = 1  # 并发
+# CONCURRENT_REQUESTS = 10  # 并发
 LOG_LEVEL = 'INFO'

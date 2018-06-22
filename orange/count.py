@@ -36,9 +36,6 @@ def get_error_count(all_path, filted_path):
 if __name__ == "__main__":
     allurl = get_file_lines("allurl.txt")
     filted = get_file_lines("filted.txt")
-    print
-    u"url总量：", allurl
-    print
-    u"过滤总量：", filted
-    print
-    u"误判总量：", get_error_count("allurl.txt", "filted.txt")
+    print(u"url总量：", allurl)
+    print(u"过滤总量：", filted)
+    print(u"误判总量：", get_error_count("allurl.txt", "filted.txt"))

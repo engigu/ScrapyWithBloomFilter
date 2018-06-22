@@ -12,7 +12,7 @@ class OrangeSpiderSpider(scrapy.Spider):
 
     def start_requests(self):
         yield scrapy.Request(url=self.start_urls[0], callback=self.parse,
-                             meta={"url": self.start_urls[0]})
+                             meta={"url": self.start_urls[0]}, dont_filter=True)
 
     def parse(self, response):
         item = OrangeItem()
