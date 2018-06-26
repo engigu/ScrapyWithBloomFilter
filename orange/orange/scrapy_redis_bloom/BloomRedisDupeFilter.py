@@ -1,31 +1,35 @@
-# -*- encoding: utf-8 -*-
-
 import logging
-from .BloomfilterOnRedis import BloomFilterRedis
-from scrapy.utils.request import request_fingerprint
+import time
+
 from scrapy.dupefilters import BaseDupeFilter
-from . import connection
+from scrapy.utils.request import request_fingerprint
 
-# default bloom filter config
-BLOOM_KEY = 'bloom_filter:%(spider_name)s:%(no)s'
-BLOOM_BLOCK_NUM = 1
+from . import defaults
+from .connection import get_redis_from_settings
+
+from .BloomfilterOnRedis import BloomFilterRedis
 
 
-class BloomRedisDupeFilter(BaseDupeFilter):
+# logger = logging.getLogger(__name__)
+
+
+class RFPDupeFilter(BaseDupeFilter):
 
     def __init__(self, server, key, blockNum, debug=False):
         self.BFR = BloomFilterRedis(server=server, key=key, blockNum=blockNum)
         self.server = server
         self.logdupes = True
         self.debug = debug
+        self.key = key
         self.logger = logging.getLogger(__name__)
 
     @classmethod
     def from_settings(cls, settings):
-        key = settings.get('BLOOM_KEY', BLOOM_KEY)
-        block_num = settings.get('BLOOM_BLOCK_NUM', BLOOM_BLOCK_NUM)
+        # key = settings.get('BLOOM_KEY', BLOOM_KEY)
+        key = defaults.DUPEFILTER_KEY % {'timestamp': int(time.time())}
+        block_num = settings.get('BLOOM_BLOCK_NUM', defaults.BLOOM_BLOCK_NUM)
         debug = settings.getbool('DUPEFILTER_DEBUG')
-        server = connection.bloom_filter_from_settings(settings)
+        server = get_redis_from_settings(settings)
 
         return cls(server, key, block_num, debug)
 
@@ -36,10 +40,8 @@ class BloomRedisDupeFilter(BaseDupeFilter):
     def request_seen(self, request):
         # use scrapy's default request_fingerprint
         fp = request_fingerprint(request)
-        # print(request.callback)
-        spider_name = str(request.callback).split("'")[1]
         # exist
-        if self.BFR.is_exists(spider_name, fp):
+        if self.BFR.is_exists(fp):
             return True
         # not exist
         return False  # have'nt seen
@@ -57,9 +59,12 @@ class BloomRedisDupeFilter(BaseDupeFilter):
     #     self.BFR.insert(spider_name,fp)
     #     return False  # have'nt seen
 
-    def close(self, reason):
-        # self.server.pool.disconnect()
-        # no need to worry redis pool disconnection
+    def close(self, reason=''):
+        self.clear()
+
+    def clear(self):
+        """Clears fingerprints data."""
+        # self.server.delete(self.key)
         pass
 
     def log(self, request, spider):
