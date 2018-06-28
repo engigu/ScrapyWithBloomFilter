@@ -30,7 +30,7 @@ class OrangeSpiderSpider(RedisSpider):
 
 class Spider1(RedisSpider):
     name = "spider1"
-    redis_key = "scrapyWithBloomfilter_demo:start_urls"
+    # redis_key = "scrapyWithBloomfilter_demo:start_urls"
     start_urls = [
         'http://tieba.baidu.com/p/4855113094?pn=1',
         'http://tieba.baidu.com/p/4855113094?pn=2',

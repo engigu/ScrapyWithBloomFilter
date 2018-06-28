@@ -15,5 +15,5 @@ def bloom_filter_from_settings(settings):
 
     _redis = redis.StrictRedis
 
-    return redis.from_url(BLOOM_REDIS_URL) if url else \
+    return _redis.from_url(BLOOM_REDIS_URL) if url else \
         _redis(host=host, port=port, db=db)
