@@ -1,4 +1,5 @@
-# 基于Redis的布隆过滤器
+# 让scrapy带上布隆过滤器
+基于`settings.py` -> `DUPEFILTER_CLASS` 配置实现
 
 ## 1.只实现去重(BloomFilterRedis文件夹、BloomFilterRedis_ex文件夹)
 
@@ -19,7 +20,7 @@
 
 ## 3.实现去重和增量(scrapy_redis_bloom文件夹)
 
-- scrapy_redis_bloom文件夹是基于scrapy-redis实现的布隆过滤器
+- 基于[scrapy-redis](https://github.com/rmax/scrapy-redis)实现的布隆过滤器
 - 替代scrapy-redis默认的`set`类型去重，实现去重+增量
 - bloom_redis配置与scrapy-redis默认在同一张表，配置方法一样
 - 具体配置在目录下`settings.py`里有详细说明。
