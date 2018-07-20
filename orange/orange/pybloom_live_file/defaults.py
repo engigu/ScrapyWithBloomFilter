@@ -1,8 +1,7 @@
 import os
 
 BLOOM_FILE_NAME = 'bloom_file'
-BLOOM_FILE_PATH = '%(path)s%(sep)s' % \
-                  {'path': os.path.split(os.path.realpath(__file__))[0], 'sep': os.path.sep}
+BLOOM_FILE_PATH = '%(path)s%(sep)s' % {'path': os.path.split(__file__)[0], 'sep': os.path.sep}
 
 # bloom file save period
 SAVE_PERIOD = 3

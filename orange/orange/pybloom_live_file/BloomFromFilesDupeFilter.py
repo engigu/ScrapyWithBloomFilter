@@ -1,16 +1,17 @@
 # -*- encoding: utf-8 -*-
 
 import logging
-from .BloomFileOperate import BloomFileOperate
-from scrapy.utils.request import request_fingerprint
+
 from scrapy.dupefilters import BaseDupeFilter
+from scrapy.utils.request import request_fingerprint
+
 from . import defaults
+from .BloomFileOperate import BloomFileOperate
 
 
 class BloomFileDupeFilter(BaseDupeFilter):
 
     def __init__(self, server, debug=False):
-        # self.BFO = BloomFileOperate(capacity=capacity,error_rate=error_rate)
         self.server = server
         self.logdupes = True
         self.debug = debug
@@ -33,29 +34,12 @@ class BloomFileDupeFilter(BaseDupeFilter):
     def request_seen(self, request):
         # use scrapy's default request_fingerprint
         fp = request_fingerprint(request)
-        # print(request.callback)
-        # exist
         res = self.server.is_exist(fp)
         if res:
             self.logger.info('过滤了重复请求：%s', request.url)
         return res
 
-    # def request_seen(self, request):
-    #     # use scrapy's default request_fingerprint
-    #     fp = request_fingerprint(request)
-    #     print(request.callback)
-    #     spider_name = str(request.callback).split("'")[1]
-    #     result = self.BFR.is_exists(spider_name, fp)
-    #     # 存在
-    #     if result:
-    #         return True
-    #     # 不存在，加入redis bitmap
-    #     self.BFR.insert(spider_name,fp)
-    #     return False  # have'nt seen
-
     def close(self, reason):
-        # self.server.pool.disconnect()
-        # no need to worry redis pool disconnection
         self.server.stop()
 
     def log(self, request, spider):
@@ -69,4 +53,4 @@ class BloomFileDupeFilter(BaseDupeFilter):
             self.logger.debug(msg, {'request': request}, extra={'spider': spider})
             self.logdupes = False
 
-        spider.crawler.stats.inc_value('bloom_filter/filtered', spider=spider)
+        spider.crawler.stats.inc_value('pybloom_live_file/filtered', spider=spider)

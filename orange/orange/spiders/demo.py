@@ -28,7 +28,7 @@ class OrangeSpiderSpider(RedisSpider):
                                      meta={"url": "http://baike.baidu.com" + new_url})
 
 
-class Spider1(RedisSpider):
+class Spider1(scrapy.Spider):
     name = "spider1"
     # redis_key = "scrapyWithBloomfilter_demo:start_urls"
     start_urls = [

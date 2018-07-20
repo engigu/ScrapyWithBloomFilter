@@ -1,6 +1,9 @@
 import os
+import signal
+import sys
 import time
 from threading import Thread
+
 import pybloom_live
 
 try:
@@ -14,7 +17,8 @@ FILE_PATH = defaults.BLOOM_FILE_PATH
 class BloomFileOperate(object):
     """使用pybloom_live实现去重、保存和载入"""
 
-    _instance = None
+    # instance = None
+    stop_signal = False
 
     def __init__(self, capacity=100000, error_rate=0.0001, save_period=3):
         self.capacity = capacity
@@ -48,23 +52,32 @@ class BloomFileOperate(object):
         return self.bf.add(strings)
 
     def stop(self):
-        self.stop_signal = True
+        BloomFileOperate.stop_signal = True
 
-    def _save(self):
+    def _auto_save(self):
+        """自动保存bloom文件，去重数量过大时候，不宜设置过短时间"""
         while True:
             with open(defaults.BLOOM_FILE_PATH + defaults.BLOOM_FILE_NAME, 'wb') as fp:
                 self.bf.tofile(fp)
-            if self.stop_signal:
-                print('--->>> bloom file saving and logout ...')
+            if BloomFileOperate.stop_signal:
+                print('--->>> pybloom file saving and exit ...')
                 break
-            print('--->>> save_period', self.save_period)
+            print('--->>> auto_save_period', self.save_period)
             time.sleep(self.save_period)
 
     def save(self):
-        t = Thread(target=self._save)
+        t = Thread(target=self._auto_save)
         t.setDaemon(False)
         t.start()
         # t.join()
+
+
+def quit(signum, frame):
+    BloomFileOperate.stop_signal = True
+
+
+signal.signal(signal.SIGINT, quit)  # 退出信号注册
+signal.signal(signal.SIGTERM, quit)
 
 
 if __name__ == '__main__':
